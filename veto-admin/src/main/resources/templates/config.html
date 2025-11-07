@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>系统配置 - Veto 管理后台</title>
+    <link rel="stylesheet" th:href="@{/static/css/dashboard.css}">
+    <link rel="stylesheet" th:href="@{/static/css/config.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="layout-container">
+        <!-- 侧边栏 -->
+        <aside class="sidebar" th:replace="fragments/sidebar :: sidebar"></aside>
+        
+        <!-- 主内容区 -->
+        <div class="main-content">
+            <!-- 顶部导航栏 -->
+            <header class="header" th:replace="fragments/header :: header"></header>
+            
+            <!-- 页面内容 -->
+            <main class="content">
+                <div class="page-header">
+                    <h1 class="page-title">
+                        <i class="fas fa-cog"></i>
+                        系统配置
+                    </h1>
+                    <div class="page-actions">
+                        <button class="btn btn-info" onclick="exportConfigs()">
+                            <i class="fas fa-download"></i>
+                            导出配置
+                        </button>
+                        <button class="btn btn-secondary" onclick="importConfigs()">
+                            <i class="fas fa-upload"></i>
+                            导入配置
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- 配置分类导航 -->
+                <div class="config-nav">
+                    <div class="nav-tabs">
+                        <button class="nav-tab active" data-category="system" onclick="switchCategory('system')">
+                            <i class="fas fa-server"></i>
+                            系统设置
+                        </button>
+                        <button class="nav-tab" data-category="security" onclick="switchCategory('security')">
+                            <i class="fas fa-shield-alt"></i>
+                            安全配置
+                        </button>
+                        <button class="nav-tab" data-category="token" onclick="switchCategory('token')">
+                            <i class="fas fa-key"></i>
+                            Token配置
+                        </button>
+                        <button class="nav-tab" data-category="business" onclick="switchCategory('business')">
+                            <i class="fas fa-chart-line"></i>
+                            业务配置
+                        </button>
+                        <button class="nav-tab" data-category="blockchain" onclick="switchCategory('blockchain')">
+                            <i class="fas fa-link"></i>
+                            区块链配置
+                        </button>
+                        <button class="nav-tab" data-category="transaction" onclick="switchCategory('transaction')">
+                            <i class="fas fa-exchange-alt"></i>
+                            交易配置
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- 配置内容区域 -->
+                <div class="config-content">
+                    <!-- 系统设置 -->
+                    <div class="config-section active" id="system-section">
+                        <div class="section-header">
+                            <h3><i class="fas fa-server"></i> 系统设置</h3>
+                            <p>系统基础配置参数</p>
+                        </div>
+                        <div class="config-grid">
+                            <div class="config-item">
+                                <div class="config-label">
+                                    <label>系统名称</label>
+                                    <span class="config-key">veto_config_system_name</span>
+                                </div>
+                                <div class="config-control">
+                                    <input type="text" name="veto_config_system_name" class="form-control" th:value="${configs['veto_config_system_name']}" data-type="string">
+                                </div>
+                                <div class="config-actions">
+                                    <button class="btn btn-sm btn-success save-btn" onclick="saveConfig(this)" style="display: none;">
+                                        <i class="fas fa-save"></i>
+                                        保存
+                                    </button>
+                                </div>
+                                <div class="config-desc">系统显示名称</div>
+                            </div>
+
+                            <div class="config-item">
+                                <div class="config-label">
+                                    <label>网站描述</label>
+                                    <span class="config-key">veto_config_site_description</span>
+                                </div>
+                                <div class="config-control">
+                                    <input type="text" name="veto_config_site_description" class="form-control" th:value="${configs['veto_config_site_description']}" data-type="string">
+                                </div>
+                                <div class="config-actions">
+                                    <button class="btn btn-sm btn-success save-btn" onclick="saveConfig(this)" style="display: none;">
+                                        <i class="fas fa-save"></i>
+                                        保存
+                                    </button>
+                                </div>
+                                <div class="config-desc">网站描述信息</div>
+                            </div>
+
+                            <div class="config-item">
+                                <div class="config-label">
+                                    <label>系统域名</label>
+                                    <span class="config-key">veto_config_system_domain</span>
+                                </div>
+                                <div class="config-control">
+                                    <input type="text" name="veto_config_system_domain" class="form-control" th:value="${configs['veto_config_system_domain']}" data-type="string">
+                                </div>
+                                <div class="config-actions">
+                                    <button class="btn btn-sm btn-success save-btn" onclick="saveConfig(this)" style="display: none;">
+                                        <i class="fas fa-save"></i>
+                                        保存
+                                    </button>
+                                </div>
+                                <div class="config-desc">系统访问域名</div>
+                            </div>
+
+                            <div class="config-item">
+                                <div class="config-label">
+                                    <label>系统启用</label>
+                                    <span class="config-key">veto_config_system_enable</span>
+                                </div>
+                                <div class="config-control">
+                                    <label class="switch">
+                                        <input type="checkbox" name="veto_config_system_enable" data-type="boolean" th:checked="${configs['veto_config_system_enable']}">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div class="config-actions">
+                                    <button class="btn btn-sm btn-success save-btn" onclick="saveConfig(this)" style="display: none;">
+                                        <i class="fas fa-save"></i>
+                                        保存
+                                    </button>
+                                </div>
+                                <div class="config-desc">是否启用系统</div>
+                            </div>
+
+                            <div class="config-item">
+                                <div class="config-label">
+                                    <label>提现手续费</label>
+                                    <span class="config-key">veto_config_withdraw_fee</span>
+                                </div>
+                                <div class="config-control">
+                                        <input type="number" step="0.01" class="form-control" min="0" max="1" name="veto_config_withdraw_fee" th:value="${configs['veto_config_withdraw_fee']}">
+                                </div>
+                                <div class="config-actions">
+                                    <button class="btn btn-sm btn-success save-btn" onclick="saveConfig(this)" style="display: none;">
+                                        <i class="fas fa-save"></i>
+                                        保存
+                                    </button>
+                                </div>
+                                <div class="config-desc">提现手续费，必须是小于等于1的数值</div>
+                            </div>
+
+                            <div class="config-item">
+                                <div class="config-label">
+                                    <label>提现要求流水倍数</label>
+                                    <span class="config-key">veto_config_withdraw_must_flow_limit_multiple</span>
+                                </div>
+                                <div class="config-control">
+                                        <input type="number" step="1" min="0" class="form-control" max="1000000000" name="veto_config_withdraw_must_flow_limit_multiple" th:value="${configs['veto_config_withdraw_must_flow_limit_multiple']}">
+                                </div>
+                                <div class="config-actions">
+                                    <button class="btn btn-sm btn-success save-btn" onclick="saveConfig(this)" style="display: none;">
+                                        <i class="fas fa-save"></i>
+                                        保存
+                                    </button>
+                                </div>
+                                <div class="config-desc">提现要求流水倍数，必须是整数数值</div>
+                            </div>
+
+                            <div class="config-item">
+                                <div class="config-label">
+                                    <label>下注手续费</label>
+                                    <span class="config-key">veto_config_bet_fee</span>
+                                </div>
+                                <div class="config-control">
+                                        <input type="number" step="0.01" min="0" max="1" class="form-control" name="veto_config_bet_fee" th:value="${configs['veto_config_bet_fee']}">
+                                </div>
+                                <div class="config-actions">
+                                    <button class="btn btn-sm btn-success save-btn" onclick="saveConfig(this)" style="display: none;">
+                                        <i class="fas fa-save"></i>
+                                        保存
+                                    </button>
+                                </div>
+                                <div class="config-desc">下注手续费，必须是小于等于1的数值</div>
+                            </div>
+
+                            <div class="config-item">
+                                <div class="config-label">
+                                    <label>默认分页大小</label>
+                                    <span class="config-key">veto_config_default_data_page_size</span>
+                                </div>
+                                <div class="config-control">
+                                    <input type="number" name="veto_config_default_data_page_size" class="form-control" th:value="${configs['veto_config_default_data_page_size']}" data-type="number" min="10" max="100" step="10">
+                                </div>
+                                <div class="config-actions">
+                                    <button class="btn btn-sm btn-success save-btn" onclick="saveConfig(this)" style="display: none;">
+                                        <i class="fas fa-save"></i>
+                                        保存
+                                    </button>
+                                </div>
+                                <div class="config-desc">数据列表默认分页大小</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 安全配置 -->
+                    <div class="config-section" id="security-section">
+                        <div class="section-header">
+                            <h3><i class="fas fa-shield-alt"></i> 安全配置</h3>
+                            <p>系统安全相关配置参数</p>
+                        </div>
+                        <div class="config-grid">
+                            <div class="config-item">
+                                <div class="config-label">
+                                    <label>登录功能</label>
+                                    <span class="config-key">veto_config_login_enable</span>
+                                </div>
+                                <div class="config-control">
+                                    <label class="switch">
+                                        <input type="checkbox" name="veto_config_login_enable" data-type="boolean" th:checked="${configs['veto_config_login_enable']}">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div class="config-actions">
+                                    <button class="btn btn-sm btn-success save-btn" onclick="saveConfig(this)" style="display: none;">
+                                        <i class="fas fa-save"></i>
+                                        保存
+                                    </button>
+                                </div>
+                                <div class="config-desc">是否启用用户登录功能</div>
+                            </div>
+
+                            <div class="config-item">
+                                <div class="config-label">
+                                    <label>注册功能</label>
+                                    <span class="config-key">veto_config_register_enable</span>
+                                </div>
+                                <div class="config-control">
+                                    <label class="switch">
+                                        <input type="checkbox" name="veto_config_register_enable" data-type="boolean" th:checked="${configs['veto_config_register_enable']}">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div class="config-actions">
+                                    <button class="btn btn-sm btn-success save-btn" onclick="saveConfig(this)" style="display: none;">
+                                        <i class="fas fa-save"></i>
+                                        保存
+                                    </button>
+                                </div>
+                                <div class="config-desc">是否启用用户注册功能</div>
+                            </div>
+
+                            <div class="config-item">
+                                <div class="config-label">
+                                    <label>登录验证码</label>
+                                    <span class="config-key">veto_config_login_captcha_enable</span>
+                                </div>
+                                <div class="config-control">
+                                    <label class="switch">
+                                        <input type="checkbox" name="veto_config_login_captcha_enable" data-type="boolean" th:checked="${configs['veto_config_login_captcha_enable']}">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div class="config-actions">
+                                    <button class="btn btn-sm btn-success save-btn" onclick="saveConfig(this)" style="display: none;">
+                                        <i class="fas fa-save"></i>
+                                        保存
+                                    </button>
+                                </div>
+                                <div class="config-desc">登录时是否需要验证码</div>
+                            </div>
+
+                            <div class="config-item">
+                                <div class="config-label">
+                                    <label>注册验证码</label>
+                                    <span class="config-key">veto_config_register_captcha_enable</span>
+                                </div>
+                                <div class="config-control">
+                                    <label class="switch">
+                                        <input type="checkbox" name="veto_config_register_captcha_enable" data-type="boolean" th:checked="${configs['veto_config_register_captcha_enable']}">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div class="config-actions">
+                                    <button class="btn btn-sm btn-success save-btn" onclick="saveConfig(this)" style="display: none;">
+                                        <i class="fas fa-save"></i>
+                                        保存
+                                    </button>
+                                </div>
+                                <div class="config-desc">注册时是否需要验证码</div>
+                            </div>
+
+                            <div class="config-item">
+                                <div class="config-label">
+                                    <label>注册需要推荐</label>
+                                    <span class="config-key">veto_config_register_need_recommend</span>
+                                </div>
+                                <div class="config-control">
+                                    <label class="switch">
+                                        <input type="checkbox" name="veto_config_register_need_recommend" data-type="boolean" th:checked="${configs['veto_config_register_need_recommend']}">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div class="config-actions">
+                                    <button class="btn btn-sm btn-success save-btn" onclick="saveConfig(this)" style="display: none;">
+                                        <i class="fas fa-save"></i>
+                                        保存
+                                    </button>
+                                </div>
+                                <div class="config-desc">注册时是否需要推荐码</div>
+                            </div>
+
+                            <div class="config-item">
+                                <div class="config-label">
+                                    <label>提现需要实名</label>
+                                    <span class="config-key">veto_config_withdraw_need_real_name_authentication</span>
+                                </div>
+                                <div class="config-control">
+                                    <label class="switch">
+                                        <input type="checkbox" name="veto_config_withdraw_need_real_name_authentication" data-type="boolean" th:checked="${configs['veto_config_withdraw_need_real_name_authentication']}">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div class="config-actions">
+                                    <button class="btn btn-sm btn-success save-btn" onclick="saveConfig(this)" style="display: none;">
+                                        <i class="fas fa-save"></i>
+                                        保存
+                                    </button>
+                                </div>
+                                <div class="config-desc">提现是否需要实名认证</div>
+                            </div>
+
+                            <div class="config-item">
+                                <div class="config-label">
+                                    <label>API数据加密</label>
+                                    <span class="config-key">veto_config_service_api_encrypt</span>
+                                </div>
+                                <div class="config-control">
+                                    <label class="switch">
+                                        <input type="checkbox" name="veto_config_service_api_encrypt" data-type="boolean" th:checked="${configs['veto_config_service_api_encrypt']}">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div class="config-actions">
+                                    <button class="btn btn-sm btn-success save-btn" onclick="saveConfig(this)" style="display: none;">
+                                        <i class="fas fa-save"></i>
+                                        保存
+                                    </button>
+                                </div>
+                                <div class="config-desc">是否对API返回数据进行加密</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Token配置 -->
+                    <div class="config-section" id="token-section">
+                        <div class="section-header">
+                            <h3><i class="fas fa-key"></i> Token配置</h3>
+                            <p>Token和验证码相关配置</p>
+                        </div>
+                        <div class="config-grid">
+                            <div class="config-item">
+                                <div class="config-label">
+                                    <label>Token密钥</label>
+                                    <span class="config-key">veto_config_token_secret_key</span>
+                                </div>
+                                <div class="config-control">
+                                    <input type="text" name="veto_config_token_secret_key" class="form-control" readonly th:value="${configs['veto_config_token_secret_key']}" data-type="string">
+                                </div>
+                                <div class="config-actions">
+                                    <button class="btn btn-sm btn-success save-btn" onclick="saveConfig(this)" style="display: none;">
+                                        <i class="fas fa-save"></i>
+                                        保存
+                                    </button>
+                                </div>
+                                <div class="config-desc">JWT Token签名密钥</div>
+                            </div>
+
+                            <div class="config-item">
+                                <div class="config-label">
+                                    <label>Token过期时间(秒)</label>
+                                    <span class="config-key">veto_config_token_expire_time_seconds</span>
+                                </div>
+                                <div class="config-control">
+                                    <input type="number" name="veto_config_token_expire_time_seconds" class="form-control" th:value="${configs['veto_config_token_expire_time_seconds']}" data-type="number" min="300" max="86400" step="60">
+                                </div>
+                                <div class="config-actions">
+                                    <button class="btn btn-sm btn-success save-btn" onclick="saveConfig(this)" style="display: none;">
+                                        <i class="fas fa-save"></i>
+                                        保存
+                                    </button>
+                                </div>
+                                <div class="config-desc">Token过期时间，单位：秒</div>
+                            </div>
+
+                            <div class="config-item">
+                                <div class="config-label">
+                                    <label>验证码过期时间(秒)</label>
+                                    <span class="config-key">veto_config_captcha_expire_time_seconds</span>
+                                </div>
+                                <div class="config-control">
+                                    <input type="number" name="veto_config_captcha_expire_time_seconds" class="form-control" th:value="${configs['veto_config_captcha_expire_time_seconds']}" data-type="number" min="60" max="600" step="30">
+                                </div>
+                                <div class="config-actions">
+                                    <button class="btn btn-sm btn-success save-btn" onclick="saveConfig(this)" style="display: none;">
+                                        <i class="fas fa-save"></i>
+                                        保存
+                                    </button>
+                                </div>
+                                <div class="config-desc">验证码过期时间，单位：秒</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 业务配置 -->
+                    <div class="config-section" id="business-section">
+                        <div class="section-header">
+                            <h3><i class="fas fa-chart-line"></i> 业务配置</h3>
+                            <p>业务逻辑相关配置参数</p>
+                        </div>
+                        <div class="config-grid">
+                            <div class="config-item">
+                                <div class="config-label">
+                                    <label>最低投注金额</label>
+                                    <span class="config-key">veto_config_min_bet_amount</span>
+                                </div>
+                                <div class="config-control">
+                                    <input type="number" name="veto_config_min_bet_amount" class="form-control" th:value="${configs['veto_config_min_bet_amount']}" data-type="number" min="1" step="1">
+                                </div>
+                                <div class="config-actions">
+                                    <button class="btn btn-sm btn-success save-btn" onclick="saveConfig(this)" style="display: none;">
+                                        <i class="fas fa-save"></i>
+                                        保存
+                                    </button>
+                                </div>
+                                <div class="config-desc">单次投注的最低金额限制</div>
+                            </div>
+
+                            <div class="config-item">
+                                <div class="config-label">
+                                    <label>比赛停止投注前等待时间(分钟)</label>
+                                    <span class="config-key">veto_config_contest_pending_before_stop_bet_mit</span>
+                                </div>
+                                <div class="config-control">
+                                    <input type="number" name="veto_config_contest_pending_before_stop_bet_mit" class="form-control" th:value="${configs['veto_config_contest_pending_before_stop_bet_mit']}" data-type="number" min="1" max="60" step="1">
+                                </div>
+                                <div class="config-actions">
+                                    <button class="btn btn-sm btn-success save-btn" onclick="saveConfig(this)" style="display: none;">
+                                        <i class="fas fa-save"></i>
+                                        保存
+                                    </button>
+                                </div>
+                                <div class="config-desc">比赛开始前多少分钟停止投注</div>
+                            </div>
+
+                            <div class="config-item">
+                                <div class="config-label">
+                                    <label>等级充值周期(天)</label>
+                                    <span class="config-key">veto_config_level_recharge_cycle_day</span>
+                                </div>
+                                <div class="config-control">
+                                    <input type="number" name="veto_config_level_recharge_cycle_day" class="form-control" th:value="${configs['veto_config_level_recharge_cycle_day']}" data-type="number" min="1" max="365" step="1">
+                                </div>
+                                <div class="config-actions">
+                                    <button class="btn btn-sm btn-success save-btn" onclick="saveConfig(this)" style="display: none;">
+                                        <i class="fas fa-save"></i>
+                                        保存
+                                    </button>
+                                </div>
+                                <div class="config-desc">在多少天内充值达到此值才可以升级到特定等级</div>
+                            </div>
+
+                            <div class="config-item">
+                                <div class="config-label">
+                                    <label>推荐奖励付出者</label>
+                                    <span class="config-key">veto_config_recommend_fee_player</span>
+                                </div>
+                                <div class="config-control">
+                                    <select name="veto_config_recommend_fee_player" class="form-control" data-type="enum_select" onchange="handleEnumChange(this)">
+                                        <option value="">请选择</option>
+                                        <option value="SYSTEM" th:selected="${configs['veto_config_recommend_fee_player'] != null && configs['veto_config_recommend_fee_player'].contains('SYSTEM')}">系统付出</option>
+                                        <option value="BELOW" th:selected="${configs['veto_config_recommend_fee_player'] != null && configs['veto_config_recommend_fee_player'].contains('BELOW')}">被推荐者付出</option>
+                                    </select>
+                                </div>
+                                <div class="config-actions">
+                                    <button class="btn btn-sm btn-success save-btn" onclick="saveConfig(this)" style="display: none;">
+                                        <i class="fas fa-save"></i>
+                                        保存
+                                    </button>
+                                </div>
+                                <div class="config-desc">推荐奖励的付出者配置</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 区块链配置 -->
+                    <div class="config-section" id="blockchain-section">
+                        <div class="section-header">
+                            <h3><i class="fas fa-link"></i> 区块链配置</h3>
+                            <p>区块链和钱包相关配置</p>
+                        </div>
+                        <div class="config-grid">
+                            <div class="config-item">
+                                <div class="config-label">
+                                    <label>ALCHEMY API密钥</label>
+                                    <span class="config-key">veto_config_alchemy_api_key</span>
+                                </div>
+                                <div class="config-control">
+                                    <input type="text" name="veto_config_alchemy_api_key" class="form-control" th:value="${configs['veto_config_alchemy_api_key']}" data-type="string">
+                                </div>
+                                <div class="config-actions">
+                                    <button class="btn btn-sm btn-success save-btn" onclick="saveConfig(this)" style="display: none;">
+                                        <i class="fas fa-save"></i>
+                                        保存
+                                    </button>
+                                </div>
+                                <div class="config-desc">ALCHEMY区块链API密钥</div>
+                            </div>
+                            <div class="config-item">
+                                <div class="config-label">
+                                    <label>ALCHEMY AUTH TOKEN</label>
+                                    <span class="config-key">veto_config_alchemy_auth_token</span>
+                                </div>
+                                <div class="config-control">
+                                    <input type="text" name="veto_config_alchemy_auth_token" class="form-control" th:value="${configs['veto_config_alchemy_auth_token']}" data-type="string">
+                                </div>
+                                <div class="config-actions">
+                                    <button class="btn btn-sm btn-success save-btn" onclick="saveConfig(this)" style="display: none;">
+                                        <i class="fas fa-save"></i>
+                                        保存
+                                    </button>
+                                </div>
+                                <div class="config-desc">ALCHEMY区块链API密钥</div>
+                            </div>
+                            <div class="config-item">
+                                <div class="config-label">
+                                    <label>ALCHEMY是否为正式网络</label>
+                                    <span class="config-key">veto_config_alchemy_test_net</span>
+                                </div>
+                                <div class="config-control">
+                                    <select name="veto_config_alchemy_test_net" class="form-control" data-type="enum_select" th:disabled="${configs['veto_config_alchemy_test_net'] != null}" onchange="handleEnumChange(this)">
+                                        <option value="false" th:selected="!${configs['veto_config_alchemy_test_net']}">正式网络</option>
+                                        <option value="false" th:selected="${configs['veto_config_alchemy_test_net']}">测试网络</option>
+                                    </select>
+                                </div>
+                                <div class="config-actions">
+                                    <button class="btn btn-sm btn-success save-btn" onclick="saveConfig(this)" style="display: none;">
+                                        <i class="fas fa-save"></i>
+                                        保存
+                                    </button>
+                                </div>
+                                <div class="config-desc">系统使用的币种类型（枚举类型）</div>
+                            </div>
+                            <div class="config-item">
+                                <div class="config-label">
+                                    <label>系统币种类型</label>
+                                    <span class="config-key">veto_config_system_coin_type</span>
+                                </div>
+                                <div class="config-control">
+                                    <select name="veto_config_system_coin_type" class="form-control" data-type="enum_select" th:disabled="${configs['veto_config_system_coin_type'] != null}" onchange="handleEnumChange(this)">
+                                        <option value=""  th:selected="${configs['veto_config_system_coin_type'] == null}">请选择币种类型</option>
+                                        <option value="USDC_SOL" th:selected="${configs['veto_config_system_coin_type'] != null && configs['veto_config_system_coin_type'] == 'USDC_SOL'}">USDC-SOL</option>
+                                        <option value="USDT_SOL" th:selected="${configs['veto_config_system_coin_type'] != null && configs['veto_config_system_coin_type'] == 'USDT_SOL'}">USDT-SOL</option>
+                                        <option value="SRM_SOL" th:selected="${configs['veto_config_system_coin_type'] != null && configs['veto_config_system_coin_type'] == 'SRM_SOL'}">SRM-SOL</option>
+                                        <option value="RAY_SOL" th:selected="${configs['veto_config_system_coin_type'] != null && configs['veto_config_system_coin_type'] == 'RAY_SOL'}">RAY-SOL</option>
+                                        <option value="SOL" th:selected="${configs['veto_config_system_coin_type'] != null && configs['veto_config_system_coin_type'] == 'SOL'}">SOL</option>
+                                        <option value="USDC_ETH" th:selected="${configs['veto_config_system_coin_type'] != null && configs['veto_config_system_coin_type'] == 'USDC_ETH'}">USDC-ETH</option>
+                                        <option value="USDT_ETH" th:selected="${configs['veto_config_system_coin_type'] != null && configs['veto_config_system_coin_type'] == 'USDT_ETH'}">USDT-ETH</option>
+                                        <option value="DAI_ETH" th:selected="${configs['veto_config_system_coin_type'] != null && configs['veto_config_system_coin_type'] == 'DAI_ETH'}">DAI-ETH</option>
+                                        <option value="LINK_ETH" th:selected="${configs['veto_config_system_coin_type'] != null && configs['veto_config_system_coin_type'] == 'LINK_ETH'}">LINK-ETH</option>
+                                        <option value="WBTC_ETH" th:selected="${configs['veto_config_system_coin_type'] != null && configs['veto_config_system_coin_type'] == 'WBTC_ETH'}">WBTC-ETH</option>
+                                        <option value="ETH" th:selected="${configs['veto_config_system_coin_type'] != null && configs['veto_config_system_coin_type'] == 'ETH'}">ETH</option>
+                                        <option value="RMB" th:selected="${configs['veto_config_system_coin_type'] != null && configs['veto_config_system_coin_type'] == 'RMB'}">RMB</option>
+                                        <option value="USD" th:selected="${configs['veto_config_system_coin_type'] != null && configs['veto_config_system_coin_type'] == 'USD'}">USD</option>
+                                    </select>
+                                </div>
+                                <div class="config-actions">
+                                    <button class="btn btn-sm btn-success save-btn" onclick="saveConfig(this)" style="display: none;">
+                                        <i class="fas fa-save"></i>
+                                        保存
+                                    </button>
+                                </div>
+                                <div class="config-desc">系统使用的币种类型（枚举类型）</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 交易配置 -->
+                    <div class="config-section" id="transaction-section">
+                        <div class="section-header">
+                            <h3><i class="fas fa-exchange-alt"></i> 交易配置</h3>
+                            <p>交易记录和资金变化配置</p>
+                        </div>
+                        <div class="config-grid">
+                            <div class="config-item">
+                                <div class="config-label">
+                                    <label>计算进入流水的动作行为</label>
+                                    <span class="config-key">veto_config_transaction_records_dimensions</span>
+                                </div>
+                                <div class="config-control">
+                                    <div class="checkbox-group" data-type="multi_checkbox">
+                                        <div class="checkbox-item">
+                                            <label class="checkbox-label">
+                                                <input type="checkbox" name="transaction_dimensions" value="RECOMMENDED" th:checked="${configs['veto_config_transaction_records_dimensions'] != null && configs['veto_config_transaction_records_dimensions'].contains('RECOMMENDED')}">
+                                                <span class="checkbox-text">推荐</span>
+                                            </label>
+                                        </div>
+                                        <div class="checkbox-item">
+                                            <label class="checkbox-label">
+                                                <input type="checkbox" name="transaction_dimensions" value="RECHARGE" th:checked="${configs['veto_config_transaction_records_dimensions'] != null && #sets.contains( configs['veto_config_transaction_records_dimensions'], 'RECHARGE')}">
+                                                <span class="checkbox-text">充值</span>
+                                            </label>
+                                        </div>
+                                        <div class="checkbox-item">
+                                            <label class="checkbox-label">
+                                                <input type="checkbox" name="transaction_dimensions" value="BET_PLAY" th:checked="${configs['veto_config_transaction_records_dimensions'] != null && configs['veto_config_transaction_records_dimensions'].contains('BET_PLAY')}">
+                                                <span class="checkbox-text">下注</span>
+                                            </label>
+                                        </div>
+                                        <div class="checkbox-item">
+                                            <label class="checkbox-label">
+                                                <input type="checkbox" name="transaction_dimensions" value="WITHDRAW" th:checked="${configs['veto_config_transaction_records_dimensions'] != null && configs['veto_config_transaction_records_dimensions'].contains('WITHDRAW')}">
+                                                <span class="checkbox-text">提款</span>
+                                            </label>
+                                        </div>
+                                        <div class="checkbox-item">
+                                            <label class="checkbox-label">
+                                                <input type="checkbox" name="transaction_dimensions" value="TRANSFER" th:checked="${configs['veto_config_transaction_records_dimensions'] != null && configs['veto_config_transaction_records_dimensions'].contains('TRANSFER')}">
+                                                <span class="checkbox-text">转账</span>
+                                            </label>
+                                        </div>
+                                        <div class="checkbox-item">
+                                            <label class="checkbox-label">
+                                                <input type="checkbox" name="transaction_dimensions" value="BET_RESULT_REWARD" th:checked="${configs['veto_config_transaction_records_dimensions'] != null && configs['veto_config_transaction_records_dimensions'].contains('BET_RESULT_REWARD')}">
+                                                <span class="checkbox-text">下注开奖结果奖励</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="config-actions">
+                                    <button class="btn btn-sm btn-success save-btn" onclick="saveConfig(this)" style="display: none;">
+                                        <i class="fas fa-save"></i>
+                                        保存
+                                    </button>
+                                </div>
+                                <div class="config-desc">流水组成部分的资金变化枚举配置（可多选）</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- 脚本 -->
+    <script th:src="@{/static/js/layout.js}"></script>
+    <script th:src="@{/static/js/config.js}"></script>
+</body>
+</html>

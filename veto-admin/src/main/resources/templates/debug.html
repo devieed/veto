@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug - Veto 管理后台</title>
+    <link rel="stylesheet" th:href="@{/static/css/dashboard.css}">
+    <link rel="stylesheet" href="/static/css/debug.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="layout-container">
+        <!-- 侧边栏 -->
+        <aside class="sidebar" th:replace="fragments/sidebar :: sidebar"></aside>
+        
+        <!-- 主内容区 -->
+        <div class="main-content">
+            <!-- 顶部导航栏 -->
+            <header class="header" th:replace="fragments/header :: header"></header>
+            
+            <!-- 页面内容 -->
+            <main class="content">
+                <div class="page-header">
+                    <h1 class="page-title">
+                        <i class="fas fa-bug"></i>
+                        Debug 调试信息
+                    </h1>
+                    <div class="page-actions">
+                        <button class="btn btn-warning" onclick="refreshDebugInfo()">
+                            <i class="fas fa-sync-alt"></i>
+                            刷新信息
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- 安全警告 -->
+                <div class="security-warning">
+                    <div class="warning-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="warning-content">
+                        <h3>安全警告</h3>
+                        <p>以下信息包含钱包的私密数据，请确保在安全的环境下查看，不要截图或复制到不安全的地方。</p>
+                        <ul>
+                            <li>助记词和私钥是钱包的最高权限凭证</li>
+                            <li>泄露这些信息将导致资产被盗</li>
+                            <li>建议在查看后立即关闭此页面</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- 密码验证区域 -->
+                <div class="password-verification" id="passwordVerification">
+                    <div class="verification-card">
+                        <div class="verification-header">
+                            <i class="fas fa-lock"></i>
+                            <h3>身份验证</h3>
+                        </div>
+                        <p class="verification-desc">为了安全起见，请验证您的身份以查看私密信息</p>
+                        <form id="verificationForm" onsubmit="verifyPassword(event)">
+                            <div class="form-group">
+                                <input id="currentPassword" type="hidden" th:value="${password}">
+                                <label for="adminPassword">管理员密码：</label>
+                                <div class="password-input-group">
+                                    <input type="password" id="adminPassword" name="password" class="form-control" 
+                                           placeholder="请输入管理员密码" required>
+                                    <button type="button" class="btn-toggle-password" onclick="togglePasswordVisibility('adminPassword')">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary" id="verifyBtn">
+                                    <span class="btn-text">
+                                        <i class="fas fa-check"></i>
+                                        验证身份
+                                    </span>
+                                    <span class="btn-loading">
+                                        <i class="fas fa-spinner fa-spin"></i>
+                                        验证中...
+                                    </span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- 钱包信息展示区域 -->
+                <div class="wallet-info-container" id="walletInfoContainer" style="display: none;">
+                    <!-- 钱包基本信息 -->
+                    <div class="info-section">
+                        <h3 class="section-title">
+                            <i class="fas fa-wallet"></i>
+                            钱包基本信息
+                        </h3>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <label>钱包类型：</label>
+                                <span class="info-value" th:text="${data.getChain().name()}">HD Wallet</span>
+                            </div>
+                            <div class="info-item">
+                                <label>网络类型：</label>
+                                <span class="info-value" th:text="${data.getChain().getToken() != null ? data.getChain().getToken().name() : data.getChain().getBlockchainSymbolNetwork().name()}">Mainnet</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 私密信息区域 -->
+                    <div class="sensitive-info-section">
+                        <h3 class="section-title">
+                            <i class="fas fa-shield-alt"></i>
+                            私密信息
+                            <span class="security-badge">高度机密</span>
+                        </h3>
+                        
+                        <!-- 助记词 -->
+                        <div class="sensitive-item">
+                            <div class="item-header">
+                                <label>助记词 (Mnemonic)</label>
+                                <div class="item-actions">
+                                    <button class="btn btn-sm btn-secondary" onclick="toggleVisibility('mnemonic')" id="mnemonicToggle">
+                                        <i class="fas fa-eye"></i>
+                                        显示
+                                    </button>
+                                    <button class="btn btn-sm btn-outline" onclick="copyToClipboard('mnemonic')">
+                                        <i class="fas fa-copy"></i>
+                                        复制
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="sensitive-content" id="mnemonicContent">
+                                <div class="hidden-placeholder">
+                                    <i class="fas fa-lock"></i>
+                                    <span>点击"显示"按钮查看助记词</span>
+                                </div>
+                                <div class="visible-content" style="display: none;">
+                                    <div class="mnemonic-words" th:text="${data.mnemonic}">
+                                        abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 私钥 -->
+                        <div class="sensitive-item">
+                            <div class="item-header">
+                                <label>私钥 (Private Key)</label>
+                                <div class="item-actions">
+                                    <button class="btn btn-sm btn-secondary" onclick="toggleVisibility('privateKey')" id="privateKeyToggle">
+                                        <i class="fas fa-eye"></i>
+                                        显示
+                                    </button>
+                                    <button class="btn btn-sm btn-outline" onclick="copyToClipboard('privateKey')">
+                                        <i class="fas fa-copy"></i>
+                                        复制
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="sensitive-content" id="privateKeyContent">
+                                <div class="hidden-placeholder">
+                                    <i class="fas fa-lock"></i>
+                                    <span>点击"显示"按钮查看私钥</span>
+                                </div>
+                                <div class="visible-content" style="display: none;">
+                                    <div class="key-value" th:text="${data.privateKey}">
+                                        xprv9s21ZrQH143K3h3fDaiK4gxU6ZW2H4b4fV7nL8...
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 公钥 -->
+                        <div class="sensitive-item">
+                            <div class="item-header">
+                                <label>公钥 (Public Key)</label>
+                                <div class="item-actions">
+                                    <button class="btn btn-sm btn-secondary" onclick="toggleVisibility('publicKey')" id="publicKeyToggle">
+                                        <i class="fas fa-eye"></i>
+                                        显示
+                                    </button>
+                                    <button class="btn btn-sm btn-outline" onclick="copyToClipboard('publicKey')">
+                                        <i class="fas fa-copy"></i>
+                                        复制
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="sensitive-content" id="publicKeyContent">
+                                <div class="hidden-placeholder">
+                                    <i class="fas fa-lock"></i>
+                                    <span>点击"显示"按钮查看公钥</span>
+                                </div>
+                                <div class="visible-content" style="display: none;">
+                                    <div class="key-value" th:text="${data.publicKey}">
+                                        xpub6CK1atdF3K2Z3b4c5d6e7f8g9h0i1j2k3l4m5n6o7p8q9r0s1t2u3v4w5x6y7z8
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 地址 -->
+                        <div class="sensitive-item">
+                            <div class="item-header">
+                                <label>钱包地址 (Address)</label>
+                                <div class="item-actions">
+                                    <button class="btn btn-sm btn-secondary" onclick="toggleVisibility('address')" id="addressToggle">
+                                        <i class="fas fa-eye"></i>
+                                        显示
+                                    </button>
+                                    <button class="btn btn-sm btn-outline" onclick="copyToClipboard('address')">
+                                        <i class="fas fa-copy"></i>
+                                        复制
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="sensitive-content" id="addressContent">
+                                <div class="hidden-placeholder">
+                                    <i class="fas fa-lock"></i>
+                                    <span>点击"显示"按钮查看地址</span>
+                                </div>
+                                <div class="visible-content" style="display: none;">
+                                    <div class="address-value" th:text="${data.address}">
+                                        1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 操作区域 -->
+                    <div class="action-section">
+                        <button class="btn btn-danger" onclick="hideAllSensitiveInfo()">
+                            <i class="fas fa-eye-slash"></i>
+                            隐藏所有私密信息
+                        </button>
+                        <button class="btn btn-warning" onclick="lockDebugPage()">
+                            <i class="fas fa-lock"></i>
+                            锁定页面
+                        </button>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <script src="/static/js/layout.js"></script>
+    <script src="/static/js/debug.js"></script>
+</body>
+</html>

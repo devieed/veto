@@ -1,0 +1,524 @@
+/* Debug页面样式 - 突出安全性和私密性 */
+.security-warning {
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 30px;
+    color: white;
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    box-shadow: 0 4px 20px rgba(255, 107, 107, 0.3);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.02);
+    }
+}
+
+.warning-icon {
+    font-size: 48px;
+    opacity: 0.9;
+    flex-shrink: 0;
+}
+
+.warning-content h3 {
+    margin: 0 0 10px 0;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.warning-content p {
+    margin: 0 0 15px 0;
+    font-size: 16px;
+    opacity: 0.9;
+}
+
+.warning-content ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.warning-content li {
+    margin-bottom: 8px;
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+/* 密码验证区域 */
+.password-verification {
+    background: white;
+    border-radius: 12px;
+    padding: 40px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border: 2px solid #e1e5e9;
+    text-align: center;
+}
+
+.verification-card {
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.verification-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.verification-header i {
+    font-size: 32px;
+    color: #667eea;
+}
+
+.verification-header h3 {
+    margin: 0;
+    color: #2c3e50;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.verification-desc {
+    color: #6c757d;
+    margin-bottom: 30px;
+    font-size: 16px;
+}
+
+.password-input-group {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.password-input-group .form-control {
+    padding-right: 50px;
+}
+
+.btn-toggle-password {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #6c757d;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 4px;
+    transition: color 0.3s ease;
+}
+
+.btn-toggle-password:hover {
+    color: #667eea;
+}
+
+/* 钱包信息容器 */
+.wallet-info-container {
+    background: white;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e1e5e9;
+}
+
+.info-section {
+    margin-bottom: 40px;
+    padding-bottom: 30px;
+    border-bottom: 2px solid #f8f9fa;
+}
+
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+    color: #2c3e50;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.section-title i {
+    color: #667eea;
+    font-size: 24px;
+}
+
+.security-badge {
+    background: #dc3545;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-left: auto;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.info-item label {
+    font-weight: 600;
+    color: #6c757d;
+    font-size: 14px;
+}
+
+.info-value {
+    color: #2c3e50;
+    font-size: 16px;
+    font-family: 'Courier New', monospace;
+    background: #f8f9fa;
+    padding: 10px 15px;
+    border-radius: 8px;
+    border: 1px solid #e1e5e9;
+}
+
+/* 私密信息区域 */
+.sensitive-info-section {
+    margin-bottom: 40px;
+}
+
+.sensitive-item {
+    margin-bottom: 30px;
+    border: 2px solid #e1e5e9;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.sensitive-item:hover {
+    border-color: #667eea;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+}
+
+.item-header {
+    background: #f8f9fa;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e1e5e9;
+}
+
+.item-header label {
+    font-weight: 700;
+    color: #2c3e50;
+    font-size: 16px;
+    margin: 0;
+}
+
+.item-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.sensitive-content {
+    padding: 20px;
+    min-height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hidden-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    color: #6c757d;
+    text-align: center;
+}
+
+.hidden-placeholder i {
+    font-size: 48px;
+    opacity: 0.5;
+}
+
+.hidden-placeholder span {
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.visible-content {
+    width: 100%;
+}
+
+/* 助记词样式 */
+.mnemonic-words {
+    background: #f8f9fa;
+    border: 2px solid #e1e5e9;
+    border-radius: 8px;
+    padding: 20px;
+    font-family: 'Courier New', monospace;
+    font-size: 16px;
+    line-height: 1.8;
+    color: #2c3e50;
+    word-break: break-all;
+    text-align: center;
+    font-weight: 600;
+}
+
+/* 密钥样式 */
+.key-value, .address-value {
+    background: #f8f9fa;
+    border: 2px solid #e1e5e9;
+    border-radius: 8px;
+    padding: 15px;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    color: #2c3e50;
+    word-break: break-all;
+    text-align: center;
+    font-weight: 500;
+}
+
+.address-value {
+    font-size: 16px;
+    letter-spacing: 1px;
+}
+
+/* 操作区域 */
+.action-section {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    padding-top: 30px;
+    border-top: 2px solid #f8f9fa;
+}
+
+/* 按钮样式 */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    justify-content: center;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover:not(:disabled) {
+    background: #5a6268;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+}
+
+.btn-outline {
+    background: transparent;
+    color: #667eea;
+    border: 2px solid #667eea;
+}
+
+.btn-outline:hover:not(:disabled) {
+    background: #667eea;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.btn-warning {
+    background: #ffc107;
+    color: #212529;
+}
+
+.btn-warning:hover:not(:disabled) {
+    background: #e0a800;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
+}
+
+.btn-danger {
+    background: #dc3545;
+    color: white;
+}
+
+.btn-danger:hover:not(:disabled) {
+    background: #c82333;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+}
+
+.btn-sm {
+    padding: 8px 16px;
+    font-size: 12px;
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* 加载状态 */
+.btn.loading .btn-text {
+    display: none;
+}
+
+.btn.loading .btn-loading {
+    display: inline-flex;
+}
+
+.btn-loading {
+    display: none;
+}
+
+/* 表单样式 */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.form-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+/* 复制成功提示 */
+.copy-success {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #28a745;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+    z-index: 10000;
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .security-warning {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .warning-icon {
+        font-size: 36px;
+    }
+    
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .item-header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+    
+    .item-actions {
+        justify-content: center;
+    }
+    
+    .action-section {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .btn {
+        width: 100%;
+        max-width: 200px;
+    }
+    
+    .mnemonic-words {
+        font-size: 14px;
+        line-height: 1.6;
+    }
+    
+    .key-value, .address-value {
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .password-verification {
+        padding: 20px;
+    }
+    
+    .wallet-info-container {
+        padding: 20px;
+    }
+    
+    .sensitive-content {
+        padding: 15px;
+        min-height: 60px;
+    }
+    
+    .hidden-placeholder i {
+        font-size: 36px;
+    }
+    
+    .hidden-placeholder span {
+        font-size: 14px;
+    }
+}

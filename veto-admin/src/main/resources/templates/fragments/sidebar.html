@@ -1,0 +1,76 @@
+<!-- 侧边栏片段 -->
+<aside class="sidebar" th:fragment="sidebar">
+    <div class="sidebar-header">
+        <div class="logo">
+            <i class="fas fa-shield-alt"></i>
+            <span th:text="${site_name}">Veto</span>
+        </div>
+        <button class="sidebar-toggle" id="sidebarToggle">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
+    
+    <nav class="sidebar-nav">
+        <ul class="nav-menu">
+            <!-- 用户管理 -->
+            <li class="nav-item has-submenu" th:classappend="${activeMenu == 'user-management'} ? 'active' : ''">
+                <a href="#" class="nav-link" data-submenu="user-management">
+                    <i class="fas fa-users"></i>
+                    <span>用户管理</span>
+                    <i class="fas fa-chevron-right submenu-arrow" th:classappend="${activeMenu == 'user-management'} ? 'fa-chevron-down' : ''"></i>
+                </a>
+                <ul class="submenu" id="user-management" th:style="${activeMenu == 'user-management'} ? 'max-height: 200px;' : ''">
+                    <li><a href="/user/get" data-page="user-list" th:classappend="${activePage == 'user-list'} ? 'active' : ''">用户列表</a></li>
+                    <li><a href="/wallet/get" data-page="user-wallet">用户钱包</a></li>
+                </ul>
+            </li>
+            
+            <!-- 赛事管理 -->
+            <li class="nav-item has-submenu" th:classappend="${activeMenu == 'event-management'} ? 'active' : ''">
+                <a href="#" class="nav-link" data-submenu="event-management">
+                    <i class="fas fa-trophy"></i>
+                    <span>赛事管理</span>
+                    <i class="fas fa-chevron-right submenu-arrow" th:classappend="${activeMenu == 'event-management'} ? 'fa-chevron-down' : ''"></i>
+                </a>
+                <ul class="submenu" id="event-management" th:style="${activeMenu == 'event-management'} ? 'max-height: 200px;' : ''">
+                    <li><a href="/admin/event-list" data-page="event-list">赛事列表</a></li>
+                    <li><a href="/admin/betting-orders" data-page="betting-orders">投注订单</a></li>
+                </ul>
+            </li>
+            
+            <!-- 球队管理 -->
+            <li class="nav-item" th:classappend="${activePage == 'team-management'} ? 'active' : ''">
+                <a href="/team/get" class="nav-link" data-page="team-management">
+                    <i class="fas fa-futbol"></i>
+                    <span>球队管理</span>
+                </a>
+            </li>
+            
+            <!-- 系统配置 -->
+            <li class="nav-item has-submenu" th:classappend="${activeMenu == 'system-config'} ? 'active' : ''">
+                <a href="#" class="nav-link" data-submenu="system-config">
+                    <i class="fas fa-cog"></i>
+                    <span>系统配置</span>
+                    <i class="fas fa-chevron-right submenu-arrow" th:classappend="${activeMenu == 'system-config'} ? 'fa-chevron-down' : ''"></i>
+                </a>
+                <ul class="submenu" id="system-config" th:style="${activeMenu == 'system-config'} ? 'max-height: 200px;' : ''">
+                    <li><a href="/system_properties" data-page="config">配置</a></li>
+                    <li><a href="/admin/wallet" data-page="wallet">钱包</a></li>
+                </ul>
+            </li>
+            
+            <!-- Super菜单 -->
+            <li class="nav-item has-submenu" th:if="${is_super}" th:classappend="${activeMenu == 'super-menu'} ? 'active' : ''">
+                <a href="#" class="nav-link" data-submenu="super-menu">
+                    <i class="fas fa-crown"></i>
+                    <span>Super</span>
+                    <i class="fas fa-chevron-right submenu-arrow" th:classappend="${activeMenu == 'super-menu'} ? 'fa-chevron-down' : ''"></i>
+                </a>
+                <ul class="submenu" id="super-menu" th:style="${activeMenu == 'super-menu'} ? 'max-height: 200px;' : ''">
+                    <li><a href="/admin/debug" data-page="debug">Debug</a></li>
+                    <li><a href="/admin/release" data-page="release">Release</a></li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+</aside>

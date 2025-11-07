@@ -1,0 +1,32 @@
+<!-- 顶部导航栏片段 -->
+<header class="top-header" th:fragment="header">
+    <div class="header-left">
+        <button class="menu-toggle" id="menuToggle">
+            <i class="fas fa-bars"></i>
+        </button>
+        <h1 class="page-title" th:text="${pageTitle}">页面标题</h1>
+    </div>
+    
+    <div class="header-right">
+        <div class="user-info">
+            <div class="user-avatar">
+                <i class="fas fa-user"></i>
+            </div>
+            <div class="user-details">
+                <span class="username">管理员</span>
+                <span class="user-role">超级管理员</span>
+            </div>
+            <div class="user-menu">
+                <button class="user-menu-btn" id="userMenuBtn">
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <ul class="user-dropdown" id="userDropdown">
+                    <li><a href="#" data-action="profile"><i class="fas fa-user"></i> 个人信息</a></li>
+                    <li><a href="#" data-action="settings"><i class="fas fa-cog"></i> 设置</a></li>
+                    <li><hr></li>
+                    <li><a href="#" data-action="logout"><i class="fas fa-sign-out-alt"></i> 退出登录</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</header>

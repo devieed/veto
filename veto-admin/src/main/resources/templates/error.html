@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>错误 - Veto 管理后台</title>
+    <link rel="stylesheet" href="/static/css/error.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="error-container">
+        <div class="error-content">
+            <div class="error-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            
+            <h1 class="error-title" th:text="${errorTitle ?: '操作失败'}">操作失败</h1>
+            
+            <div class="error-message" th:text="${errorMessage ?: '抱歉，您的操作遇到了问题，请检查输入信息后重试。'}">
+                抱歉，您的操作遇到了问题，请检查输入信息后重试。
+            </div>
+            
+            <div class="error-details" th:if="${errorDetails}">
+                <h3>详细信息：</h3>
+                <p th:text="${errorDetails}"></p>
+            </div>
+            
+            <div class="error-actions">
+                <button type="button" class="btn btn-primary" onclick="goBack()">
+                    <i class="fas fa-arrow-left"></i>
+                    返回上一页
+                </button>
+                
+                <button type="button" class="btn btn-secondary" onclick="goHome()">
+                    <i class="fas fa-home"></i>
+                    返回首页
+                </button>
+            </div>
+        </div>
+        
+        <div class="error-footer">
+            <p>如果您持续遇到此问题，请联系技术支持</p>
+        </div>
+    </div>
+    
+    <script src="/static/js/error.js"></script>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle} + ' - Veto 管理后台'">用户列表 - Veto 管理后台</title>
+    <link rel="stylesheet" th:href="@{/static/css/dashboard.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- 包含侧边栏 -->
+        <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+        <!-- 主内容区域 -->
+        <main class="main-content">
+            <!-- 包含顶部导航栏 -->
+            <div th:replace="~{fragments/header :: header}"></div>
+
+            <!-- 页面内容 -->
+            <div class="content-area">
+                <div class="page-content">
+                    <div class="page-header">
+                        <h2>用户列表</h2>
+                        <button class="btn btn-primary">
+                            <i class="fas fa-plus"></i> 添加用户
+                        </button>
+                    </div>
+                    
+                    <div class="page-filters">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="usernameSearch" placeholder="搜索用户名..." th:value="${searchKeyword}">
+                        </div>
+                    </div>
+                    
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>用户名</th>
+                                    <th>注册时间</th>
+                                    <th>最后一次登录时间</th>
+                                    <th>推荐码</th>
+                                    <th>等级</th>
+                                    <th>已推荐人数</th>
+                                    <th>状态</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="user : ${data}" th:if="${#lists.isEmpty(data.content)}">
+                                    <td colspan="9" class="no-data">暂无数据</td>
+                                </tr>
+                                <tr th:each="user : ${data.content}" th:if="${!#lists.isEmpty(data.content)}">
+                                    <td th:text="${user.id}">1</td>
+                                    <td th:text="${user.username}">张三</td>
+                                    <td th:text="${#dates.format(user.createdAt, 'yyyy-MM-dd HH:mm:ss')}">2024-01-01</td>
+                                    <td th:text="${#dates.format(user.lastLoginAt, 'yyyy-MM-dd HH:mm:ss')}">2024-01-01</td>
+                                    <td th:text="${user.recommendCode}"></td>
+                                    <td th:text="${user.userLevel.level.name}"></td>
+                                    <td th:text="${user.recommendUserCount}"></td>
+                                    <td>
+                                        <span class="status" th:classappend="${user.status} ? 'active' : 'inactive'"
+                                              th:text="${user.status} ? '正常' : '禁用'">正常</span>
+                                    </td>
+                                    <td>
+                                        <button class="btn-action btn-edit" th:onclick="'editUser(\'' + ${user.id} + '\')'">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <div class="pagination">
+                            <button class="btn-prev" id="prevBtn" th:disabled="${data.first}">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <span class="page-info">
+                                第 <span th:text="${data.pageable.pageNumber + 1}">1</span> 页，共 <span th:text="${data.totalPages}">1</span> 页
+                            </span>
+                            <button class="btn-next" id="nextBtn" th:disabled="${data.last}">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 加载遮罩 -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <span>加载中...</span>
+        </div>
+    </div>
+
+    <!-- 通用JavaScript -->
+    <script th:src="@{/static/js/layout.js}"></script>
+    <!-- 页面特定JavaScript -->
+    <script th:src="@{/static/js/user-list.js}"></script>
+</body>
+</html>

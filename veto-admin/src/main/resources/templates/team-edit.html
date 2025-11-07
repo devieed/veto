@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${team.id ? '编辑球队' : '添加球队'} + ' - Veto 管理后台'">编辑球队 - Veto 管理后台</title>
+    <link rel="stylesheet" th:href="@{/static/css/dashboard.css}">
+    <link rel="stylesheet" href="/static/css/team.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="layout-container">
+        <!-- 侧边栏 -->
+        <aside class="sidebar" th:replace="fragments/sidebar :: sidebar"></aside>
+        
+        <!-- 主内容区 -->
+        <div class="main-content">
+            <!-- 顶部导航栏 -->
+            <header class="header" th:replace="fragments/header :: header"></header>
+            
+            <!-- 页面内容 -->
+            <main class="content">
+                <div class="page-header">
+                    <h1 class="page-title" th:text="${team.id ? '编辑球队' : '添加球队'}">编辑球队</h1>
+                    <div class="page-actions">
+                        <button class="btn btn-secondary" onclick="goBack()">
+                            <i class="fas fa-arrow-left"></i>
+                            返回
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="team-edit-container">
+                    <!-- 球队信息卡片 -->
+                    <div class="info-card" th:if="${team.id}">
+                        <h3>球队信息</h3>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <label>球队ID：</label>
+                                <span th:text="${team.id}">1</span>
+                            </div>
+                            <div class="info-item">
+                                <label>创建时间：</label>
+                                <span th:text="${#dates.format(team.createdAt, 'yyyy-MM-dd HH:mm:ss')}">2024-01-01 10:00:00</span>
+                            </div>
+                            <div class="info-item">
+                                <label>最后更新：</label>
+                                <span th:text="${#dates.format(team.updatedAt, 'yyyy-MM-dd HH:mm:ss')}">2024-01-15 10:30:00</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 编辑表单 -->
+                    <div class="edit-form-card">
+                        <h3 th:text="${team.id ? '编辑球队' : '添加球队'}">编辑球队</h3>
+                        <form id="teamEditForm" enctype="multipart/form-data" onsubmit="submitForm(event)">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="nameCn">中文名称：</label>
+                                    <input type="text" id="nameCn" name="nameCn" class="form-control" 
+                                           th:value="${team.nameCn}" required>
+                                    <small class="form-text">请输入球队的中文名称</small>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="nameEn">英文名称：</label>
+                                    <input type="text" id="nameEn" name="nameEn" class="form-control" 
+                                           th:value="${team.nameEn}" required>
+                                    <small class="form-text">请输入球队的英文名称</small>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="status">球队状态：</label>
+                                <select id="status" name="status" class="form-control" required>
+                                    <option value="true" th:selected="${team.status == true}">启用</option>
+                                    <option value="false" th:selected="${team.status == false}">禁用</option>
+                                </select>
+                                <small class="form-text">选择球队状态</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="logo">球队图标：</label>
+                                <div class="file-upload-area">
+                                    <input type="file" id="logo" name="logo" class="file-input" 
+                                           accept="image/*" onchange="handleFileSelect(event)">
+                                    <div class="upload-placeholder" id="uploadPlaceholder">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                        <span>点击选择图片或拖拽到此处</span>
+                                        <small>支持 JPG、PNG、GIF 格式，建议尺寸 200x200px</small>
+                                    </div>
+                                    <div class="image-preview" id="imagePreview" style="display: none;">
+                                        <img id="previewImage" src="" alt="预览图片">
+                                        <button type="button" class="remove-image" onclick="removeImage()">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <!-- 当前图片显示 -->
+                                <div class="current-image" th:if="${team.logo}">
+                                    <label>当前图标：</label>
+                                    <div class="current-image-container">
+                                        <img th:src="${team.logo}" alt="当前图标" class="current-logo">
+                                        <button type="button" class="btn btn-sm btn-secondary" onclick="removeCurrentImage()">
+                                            <i class="fas fa-trash"></i>
+                                            删除当前图标
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <small class="form-text">建议上传正方形图片，支持 JPG、PNG、GIF 格式</small>
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary" id="submitBtn">
+                                    <span class="btn-text">
+                                        <i class="fas fa-save"></i>
+                                        <span th:text="${team.id ? '保存更改' : '添加球队'}">保存更改</span>
+                                    </span>
+                                    <span class="btn-loading">
+                                        <i class="fas fa-spinner fa-spin"></i>
+                                        <span th:text="${team.id ? '保存中...' : '添加中...'}">保存中...</span>
+                                    </span>
+                                </button>
+                                <button type="button" class="btn btn-secondary" onclick="goBack()">
+                                    <i class="fas fa-times"></i>
+                                    取消
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <script src="/static/js/layout.js"></script>
+    <script src="/static/js/team-edit.js"></script>
+</body>
+</html>

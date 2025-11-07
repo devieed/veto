@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle} + ' - Veto 管理后台'">编辑用户 - Veto 管理后台</title>
+    <link rel="stylesheet" th:href="@{/static/css/dashboard.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- 包含侧边栏 -->
+        <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+        <!-- 主内容区域 -->
+        <main class="main-content">
+            <!-- 包含顶部导航栏 -->
+            <div th:replace="~{fragments/header :: header}"></div>
+
+            <!-- 页面内容 -->
+            <div class="content-area">
+                <div class="page-content">
+                    <!-- 用户基本信息 -->
+                    <div class="info-card">
+                        <h3><i class="fas fa-user"></i> 用户基本信息</h3>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <label>用户ID</label>
+                                <span th:text="${data.id}">1</span>
+                            </div>
+                            <div class="info-item">
+                                <label>用户名</label>
+                                <span th:text="${data.username}">张三</span>
+                            </div>
+                            <div class="info-item">
+                                <label>注册时间</label>
+                                <span th:text="${#dates.format(data.createdAt, 'yyyy-MM-dd HH:mm:ss')}">2024-01-01</span>
+                            </div>
+                            <div class="info-item">
+                                <label>最后登录</label>
+                                <span th:text="${#dates.format(data.lastLoginAt, 'yyyy-MM-dd HH:mm:ss')}">2024-01-01</span>
+                            </div>
+                            <div class="info-item">
+                                <label>推荐码</label>
+                                <span th:text="${data.recommendCode}">ABC123</span>
+                            </div>
+                            <div class="info-item">
+                                <label>已推荐人数</label>
+                                <span th:text="${data.recommendUserCount}">5</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 编辑表单 -->
+                    <div class="edit-form-card">
+                        <h3><i class="fas fa-edit"></i> 编辑用户</h3>
+                        <form id="editUserForm" th:action="@{/user/update}" method="post">
+                            <input type="hidden" name="id" th:value="${'' + data.id}">
+                            
+                            <!-- 修改密码 -->
+                            <div class="form-group">
+                                <label for="newPassword">新密码</label>
+                                <div class="password-input-group">
+                                    <input type="password" maxlength="20" id="newPassword" name="password" placeholder="请输入新密码（留空则不修改）">
+                                    <button type="button" class="btn-toggle-password" onclick="togglePassword('newPassword')">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- 用户状态 -->
+                            <div class="form-group">
+                                <label for="status">用户状态</label>
+                                <select id="status" name="status" class="form-select">
+                                    <option value="true" th:selected="${data.status}">启用</option>
+                                    <option value="false" th:selected="${!data.status}">禁用</option>
+                                </select>
+                            </div>
+
+                            <!-- VIP等级 -->
+                            <div class="form-group">
+                                <label for="vipLevel">VIP等级(<span style="color: red">用户触发充值等可能造成重新评级的行为后，VIP等级可能会重新评级</span>)</label>
+                                <select id="vipLevel" name="vip" class="form-select">
+                                    <option value="">请选择VIP等级</option>
+                                    <option th:each="level : ${levelProp}"
+                                            th:value="${level.id}" 
+                                            th:text="${level.name}"
+                                            th:selected="${data.userLevel.level.id == level.id}">
+                                        普通用户
+                                    </option>
+                                </select>
+                            </div>
+
+                            <!-- 操作按钮 -->
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-secondary" onclick="goBack()">
+                                    <i class="fas fa-arrow-left"></i> 返回
+                                </button>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save"></i> 保存修改
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 加载遮罩 -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <span>加载中...</span>
+        </div>
+    </div>
+
+    <!-- 通用JavaScript -->
+    <script th:src="@{/static/js/layout.js}"></script>
+    <!-- 页面特定JavaScript -->
+    <script th:src="@{/static/js/user-edit.js}"></script>
+</body>
+<style type="text/css">
+    .error-message {
+        background: #fee;
+        color: #c33;
+        padding: 12px;
+        border-radius: 6px;
+        font-size: 14px;
+        text-align: center;
+        margin-top: 15px;
+        border-left: 4px solid #c33;
+    }
+</style>
+</html>

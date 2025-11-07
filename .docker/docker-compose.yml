@@ -1,0 +1,91 @@
+#  Timezone Identifier	Description	UTC Offset
+#    UTC	Coordinated Universal Time	+00:00
+#    Asia/Shanghai	China Standard Time (Beijing)	+08:00
+#    Asia/Tokyo	Japan Standard Time (Tokyo)	+09:00
+#    Europe/London	Greenwich Mean Time (London)	+00:00
+#    Europe/Paris	Central European Time (Paris)	+01:00
+#    America/New_York	Eastern Time (New York)	-05:00
+#    America/Los_Angeles	Pacific Time (Los Angeles)	-08:00
+#  Australia/Sydney	Australian Eastern Time (Sydney)	+10:00
+services:
+  permission-adapter:
+    image: alpine:3.14
+    command: sh -c "chown -R 999 /redis && chmod -R 755 /mysql && chmod -R 755 /images"
+    environment:
+      - TZ=UTC
+    volumes:
+      - ./mysql:/mysql
+      - ./redis:/redis
+      - ./images/user-avatar:/images/user-avatar
+      - ./images/team-avatar:/images/team-avatar
+      - ./images/contest-avatar:/images/avatar
+
+  mariadb:
+    image: mariadb:11.8.2
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "3"
+    environment:
+      - MYSQL_ROOT_PASSWORD=veto
+      - MYSQL_DATABASE=veto
+      - TZ=UTC
+    ports:
+      - "3306:3306"
+    command:
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+    healthcheck:
+      test: mysqladmin ping -h 127.0.0.1 -u root --password=$$MYSQL_ROOT_PASSWORD
+      timeout: 3s
+      retries: 20
+      interval: 30s
+    volumes:
+      - ./mysql/data:/var/lib/mysql
+    links:
+      - permission-adapter
+
+  redis:
+    image: redis:8.2.1
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "3"
+    ports:
+      - "6379:6379"
+    environment:
+      - TZ=UTC
+
+    volumes:
+      - ./redis/data:/redis/data
+      - ./redis/conf:/redis/conf
+      - ./redis/log:/redis/log
+    command: redis-server /redis/conf/redis.conf && bash
+    healthcheck:
+      test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
+      timeout: 3s
+      retries: 20
+      interval: 30s
+    links:
+      - permission-adapter
+
+volumes:
+  contest-avatar:
+    driver: local
+    driver_opts:
+      type: none
+      device: contest-avatar
+      o: bind
+  user-avatar:
+    driver: local
+    driver_opts:
+      type: none
+      device: user-avatar
+      o: bind
+  team-avatar:
+    driver: local
+    driver_opts:
+      type: none
+      device: team-avatar

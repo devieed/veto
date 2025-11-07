@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle} + ' - Veto 管理后台'">Veto 管理后台</title>
+    <link rel="stylesheet" th:href="@{/static/css/dashboard.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- 包含侧边栏 -->
+        <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+        <!-- 主内容区域 -->
+        <main class="main-content">
+            <!-- 包含顶部导航栏 -->
+            <div th:replace="~{fragments/header :: header}"></div>
+
+            <!-- 页面内容 -->
+            <div class="content-area">
+                <div class="page-content">
+                    <!-- 页面特定内容 -->
+                    <div th:fragment="content">
+                        <p>页面内容将在这里显示</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 加载遮罩 -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <span>加载中...</span>
+        </div>
+    </div>
+
+    <!-- 通用JavaScript -->
+    <script th:src="@{/static/js/layout.js}"></script>
+    <!-- 页面特定JavaScript -->
+    <div th:fragment="scripts"></div>
+</body>
+</html>

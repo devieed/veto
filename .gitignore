@@ -1,0 +1,10 @@
+target/
+.idea/
+*iml
+.docker/images/contest-avatar
+.docker/images/user-avatar
+.docker/mysql
+.docker/redis/log
+.docker/redis/data
+.vscode
+.docker/veto.tar.gz

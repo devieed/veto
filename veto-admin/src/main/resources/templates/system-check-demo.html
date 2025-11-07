@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>系统启动检查演示 - Veto 管理后台</title>
+    <link rel="stylesheet" th:href="@{/static/css/dashboard.css}">
+    <link rel="stylesheet" th:href="@{/static/css/system-check.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- 包含侧边栏 -->
+        <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+        <!-- 主内容区域 -->
+        <main class="main-content">
+            <!-- 包含顶部导航栏 -->
+            <div th:replace="~{fragments/header :: header}"></div>
+
+            <!-- 页面内容 -->
+            <div class="content-area">
+                <div class="page-content">
+                    <div class="page-header">
+                        <h1 class="page-title">
+                            <i class="fas fa-cog"></i>
+                            系统启动检查演示
+                        </h1>
+                    </div>
+                    
+                    <div class="demo-content">
+                        <div class="demo-card">
+                            <h3>系统启动检查模态框演示</h3>
+                            <p>点击下面的按钮来演示系统启动检查模态框的效果：</p>
+                            
+                            <div class="demo-buttons">
+                                <button class="btn btn-primary" onclick="showSystemCheckModal()">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    显示系统检查模态框
+                                </button>
+                                
+                                <button class="btn btn-secondary" onclick="showSystemCheckModalWithData()">
+                                    <i class="fas fa-database"></i>
+                                    显示带数据的模态框
+                                </button>
+                            </div>
+                            
+                            <div class="demo-info">
+                                <h4>功能特点：</h4>
+                                <ul>
+                                    <li>✅ 无法通过ESC键或点击外部关闭</li>
+                                    <li>✅ 阻止点击穿透</li>
+                                    <li>✅ 表单验证</li>
+                                    <li>✅ 响应式设计</li>
+                                    <li>✅ 加载状态显示</li>
+                                    <li>✅ 成功/错误状态反馈</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 系统启动检查模态框 -->
+    <div class="system-check-modal" id="systemCheckModal" style="display: none;">
+        <div class="modal-overlay">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="header-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <h2>系统启动检查</h2>
+                </div>
+                
+                <div class="modal-body">
+                    <div class="check-content">
+                        <p class="check-description">
+                            系统检测到以下核心参数尚未配置，请完成配置以确保系统正常运行：
+                        </p>
+                        
+                        <div class="missing-configs">
+                            <h3>缺失的配置项：</h3>
+                            <ul class="config-list">
+                                <li>系统名称 (veto_config_system_name)</li>
+                                <li>系统域名 (veto_config_system_domain)</li>
+                                <li>Token密钥 (veto_config_token_secret_key)</li>
+                                <li>系统钱包地址 (veto_config_system_wallet)</li>
+                                <li>系统币种类型 (veto_config_system_coin_type)</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="config-form">
+                            <form id="systemCheckForm">
+                                <div class="form-group">
+                                    <label for="systemName">系统名称 *</label>
+                                    <input type="text" id="systemName" name="systemName" class="form-control" 
+                                           placeholder="请输入系统名称" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="systemDomain">系统域名 *</label>
+                                    <input type="url" id="systemDomain" name="systemDomain" class="form-control" 
+                                           placeholder="https://example.com" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="tokenSecret">Token密钥 *</label>
+                                    <input type="text" id="tokenSecret" name="tokenSecret" class="form-control" 
+                                           placeholder="请输入Token签名密钥" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="systemWallet">系统钱包地址 *</label>
+                                    <input type="text" id="systemWallet" name="systemWallet" class="form-control" 
+                                           placeholder="请输入系统钱包地址" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="coinType">系统币种类型 *</label>
+                                    <select id="coinType" name="coinType" class="form-control" required>
+                                        <option value="">请选择币种类型</option>
+                                        <option value="BTC">Bitcoin (BTC)</option>
+                                        <option value="ETH">Ethereum (ETH)</option>
+                                        <option value="USDT">Tether (USDT)</option>
+                                        <option value="USDC">USD Coin (USDC)</option>
+                                        <option value="SOL">Solana (SOL)</option>
+                                    </select>
+                                </div>
+                            </form>
+                        </div>
+                        
+                        <div class="check-warning">
+                            <i class="fas fa-info-circle"></i>
+                            <span>请确保所有必填项都已正确填写，这些参数是系统正常运行的基础保障。</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="submitSystemCheck" onclick="submitSystemCheck()">
+                        <i class="fas fa-check"></i>
+                        完成配置
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 通用JavaScript -->
+    <script th:src="@{/static/js/layout.js}"></script>
+    <!-- 系统检查JavaScript -->
+    <script th:src="@{/static/js/system-check.js}"></script>
+    
+    <script>
+        // 演示函数
+        function showSystemCheckModal() {
+            const modal = document.getElementById('systemCheckModal');
+            modal.style.display = 'block';
+        }
+        
+        function showSystemCheckModalWithData() {
+            const modal = document.getElementById('systemCheckModal');
+            modal.style.display = 'block';
+            
+            // 填充一些示例数据
+            document.getElementById('systemName').value = 'Veto Platform';
+            document.getElementById('systemDomain').value = 'https://veto.example.com';
+            document.getElementById('tokenSecret').value = 'your-secret-key-here';
+            document.getElementById('systemWallet').value = '0x1234567890abcdef';
+            document.getElementById('coinType').value = 'USDT';
+        }
+        
+        // 重写提交函数用于演示
+        window.submitSystemCheck = function() {
+            const submitBtn = document.getElementById('submitSystemCheck');
+            const modalContent = document.querySelector('.modal-content');
+            
+            // 验证表单
+            if (!validateForm()) {
+                showError('请填写所有必填项');
+                return;
+            }
+            
+            // 显示加载状态
+            setLoadingState(true);
+            
+            // 模拟网络请求
+            setTimeout(() => {
+                showSuccess('系统配置完成，正在重新加载...');
+                setTimeout(() => {
+                    const modal = document.getElementById('systemCheckModal');
+                    modal.style.display = 'none';
+                    setLoadingState(false);
+                }, 2000);
+            }, 1500);
+        };
+    </script>
+    
+    <style>
+        .demo-content {
+            padding: 30px;
+        }
+        
+        .demo-card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .demo-buttons {
+            display: flex;
+            gap: 16px;
+            margin: 24px 0;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        
+        .demo-info {
+            margin-top: 24px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .demo-info h4 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        
+        .demo-info ul {
+            margin: 12px 0 0 0;
+            padding-left: 20px;
+        }
+        
+        .demo-info li {
+            margin-bottom: 8px;
+            color: #495057;
+        }
+    </style>
+</body>
+</html>

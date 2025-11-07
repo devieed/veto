@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>编辑钱包 - Veto 管理后台</title>
+    <link rel="stylesheet" href="/static/css/dashboard.css">
+    <link rel="stylesheet" href="/static/css/wallet.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="layout-container">
+        <!-- 侧边栏 -->
+        <aside class="sidebar" th:replace="fragments/sidebar :: sidebar"></aside>
+        
+        <!-- 主内容区 -->
+        <div class="main-content">
+            <!-- 顶部导航栏 -->
+            <header class="header" th:replace="fragments/header :: header"></header>
+            
+            <!-- 页面内容 -->
+            <main class="content">
+                <div class="page-header">
+                    <h1 class="page-title">编辑钱包</h1>
+                    <div class="page-actions">
+                        <button class="btn btn-secondary" onclick="goBack()">
+                            <i class="fas fa-arrow-left"></i>
+                            返回
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="wallet-edit-container">
+                    <!-- 钱包信息卡片 -->
+                    <div class="info-card">
+                        <h3>钱包信息</h3>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <label>钱包ID：</label>
+                                <span th:text="${data.id}">1</span>
+                            </div>
+                            <div class="info-item">
+                                <label>用户ID：</label>
+                                <a href="/user/get?id=${wallet.userId}" class="user-link" th:href="@{/user/get(id=${data.userId})}" th:text="${data.userId}">1001</a>
+                            </div>
+                            <div class="info-item">
+                                <label>钱包类别：</label>
+                                <span th:text="${data.coinType}">主钱包</span>
+                            </div>
+                            <div class="info-item">
+                                <label>流水额：</label>
+                                <span class="amount" th:text="${#numbers.formatDecimal(data.flowLimit, 1, 2)}">500.00</span>
+                            </div>
+                            <div class="info-item">
+                                <label>总下注金额：</label>
+                                <span class="amount" th:text="${#numbers.formatDecimal(data.totalBets, 1, 2)}">2000.00</span>
+                            </div>
+                            <div class="info-item">
+                                <label>最后更新：</label>
+                                <span th:text="${#dates.format(data.updatedAt, 'yyyy-MM-dd HH:mm:ss')}">2024-01-15 10:30:00</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 编辑表单 -->
+                    <div class="edit-form-card">
+                        <h3>编辑钱包</h3>
+                        <form method="post" action="/wallet/update">
+                            <input type="hidden" name="id" th:value="${data.id + ''}">
+                            <div class="form-group">
+                                <label for="balance">当前余额：</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">¥</span>
+                                    <input type="number" id="balance" name="balance" class="form-control" 
+                                           th:value="${data.balance}" step="0.01" min="0" required>
+                                </div>
+                                <small class="form-text">请输入新的余额金额</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="status">钱包状态：</label>
+                                <select id="status" name="status" class="form-control" required>
+                                    <option value="true" th:selected="${data.status}">正常</option>
+                                    <option value="false" th:selected="${!data.status}">禁用</option>
+                                </select>
+                                <small class="form-text">选择钱包状态</small>
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary" id="submitBtn">
+                                    <span class="btn-text">
+                                        <i class="fas fa-save"></i>
+                                        保存更改
+                                    </span>
+                                    <span class="btn-loading">
+                                        <i class="fas fa-spinner fa-spin"></i>
+                                        保存中...
+                                    </span>
+                                </button>
+                                <button type="button" class="btn btn-secondary" onclick="goBack()">
+                                    <i class="fas fa-times"></i>
+                                    取消
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <script src="/static/js/layout.js"></script>
+    <script src="/static/js/wallet-edit.js"></script>
+</body>
+</html>

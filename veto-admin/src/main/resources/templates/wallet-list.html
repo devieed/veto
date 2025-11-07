@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>钱包管理 - Veto 管理后台</title>
+    <link rel="stylesheet" th:href="@{/static/css/dashboard.css}">
+    <link rel="stylesheet" href="/static/css/wallet.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="layout-container">
+        <!-- 侧边栏 -->
+        <aside class="sidebar" th:replace="fragments/sidebar :: sidebar"></aside>
+        
+        <!-- 主内容区 -->
+        <div class="main-content">
+            <!-- 顶部导航栏 -->
+            <header class="header" th:replace="fragments/header :: header"></header>
+            
+            <!-- 页面内容 -->
+            <main class="content">
+                <div class="page-header">
+                    <h1 class="page-title">钱包管理</h1>
+                    <div class="page-actions">
+                        <button class="btn btn-primary" onclick="refreshWalletList()">
+                            <i class="fas fa-sync-alt"></i>
+                            刷新
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- 搜索和筛选 -->
+                <div class="search-section">
+                    <div class="search-form">
+                        <div class="form-group">
+                            <label for="userSearch">用户ID搜索：</label>
+                            <input type="text" id="userSearch" class="form-control" 
+                                   th:value="${searchUserId}" placeholder="请输入用户ID">
+                        </div>
+                        <button class="btn btn-primary" onclick="handleSearch()">
+                            <i class="fas fa-search"></i>
+                            搜索
+                        </button>
+                        <button class="btn btn-secondary" onclick="clearSearch()">
+                            <i class="fas fa-times"></i>
+                            清空
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- 钱包列表 -->
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>钱包ID</th>
+                                <th>用户ID</th>
+                                <th>余额</th>
+                                <th>类别</th>
+                                <th>流水额</th>
+                                <th>状态</th>
+                                <th>总下注金额</th>
+                                <th>最后更新时间</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="wallet : ${data}" th:class="${wallet.status} ? '' : 'frozen-row'">
+                                <td th:text="${wallet.id}">1</td>
+                                <td>
+                                    <a href="/user/get?id=${wallet.userId}" class="user-link" th:href="@{/user/get(id=${wallet.userId})}" th:text="${wallet.userId}">1001</a>
+                                </td>
+                                <td class="amount-cell">
+                                    <span class="amount" th:text="${#numbers.formatDecimal(wallet.balance, 1, 2)}">1000.00</span>
+                                </td>
+                                <td>
+                                    <span class="wallet-type" th:text="${wallet.coinType}">主钱包</span>
+                                </td>
+                                <td class="amount-cell">
+                                    <span class="amount" th:text="${#numbers.formatDecimal(wallet.flowLimit, 1, 2)}">500.00</span>
+                                </td>
+                                <td>
+                                    <span class="status-badge" th:class="'status-' + ${wallet.status}" th:text="${wallet.status ? '正常' : '禁用'}">正常</span>
+                                </td>
+                                <td class="amount-cell">
+                                    <span class="amount" th:text="${#numbers.formatDecimal(wallet.totalBets, 1, 2)}">2000.00</span>
+                                </td>
+                                <td th:text="${#dates.format(wallet.updatedAt, 'yyyy-MM-dd HH:mm:ss')}">2024-01-15 10:30:00</td>
+                                <td class="action-cell">
+                                    <button class="btn btn-sm btn-primary" th:onclick="'editWallet(\'' + ${wallet.id} + '\')'">
+                                        <i class="fas fa-edit"></i>
+                                        编辑
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <!-- 分页 -->
+                    <div class="pagination">
+                        <button class="btn-prev" id="prevBtn" th:disabled="${data.first}">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <span class="page-info">
+                            第 <span th:text="${data.pageable.pageNumber + 1}">1</span> 页，共 <span th:text="${data.totalPages}">1</span> 页
+                        </span>
+                        <button class="btn-next" id="nextBtn" th:disabled="${data.last}">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <script src="/static/js/layout.js"></script>
+    <script src="/static/js/wallet-list.js"></script>
+</body>
+<script type="text/javascript">
+    function editWallet(id){
+        window.location.href = '/wallet/edit/' + id;
+    }
+</script>
+</html>

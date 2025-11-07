@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle} + ' - Veto 管理后台'">仪表板 - Veto 管理后台</title>
+    <link rel="stylesheet" th:href="@{/static/css/dashboard.css}">
+    <link rel="stylesheet" th:href="@{/static/css/system-check.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+<div class="dashboard-container">
+    <!-- 包含侧边栏 -->
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+    <!-- 主内容区域 -->
+    <main class="main-content">
+        <!-- 包含顶部导航栏 -->
+        <div th:replace="~{fragments/header :: header}"></div>
+
+        <!-- 页面内容 -->
+        <div class="content-area">
+            <div class="page-content">
+                <!-- 默认仪表板内容 -->
+                <div class="dashboard-welcome">
+                    <div class="welcome-card">
+                        <h2>欢迎使用 Veto 管理后台</h2>
+                        <p>请从左侧菜单选择要管理的功能模块</p>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3>用户总数</h3>
+                                <span class="stat-number" id="totalUsers" th:text="${userCount}">-</span>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-trophy"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3>赛事总数</h3>
+                                <span class="stat-number" id="totalEvents" th:text="${contestCount}">-</span>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-futbol"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3>球队总数</h3>
+                                <span class="stat-number" id="totalTeams" th:text="${teamCount}">-</span>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-money-bill-wave"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3>今日投注</h3>
+                                <span class="stat-number" id="todayBets" th:text="${dailyBetCount}">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- 加载遮罩 -->
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-spinner">
+        <i class="fas fa-spinner fa-spin"></i>
+        <span>加载中...</span>
+    </div>
+</div>
+
+<!-- 系统启动检查模态框 -->
+<div class="system-check-modal" th:if="${showSystemCheckModal}">
+    <div class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="header-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <h2>系统启动检查</h2>
+            </div>
+
+            <div class="modal-body">
+                <div class="check-content">
+                    <p class="check-description">
+                        系统检测到以下核心参数尚未配置，请完成配置以确保系统正常运行：
+                    </p>
+
+                    <div class="missing-configs" th:if="${missingConfigs != null and !missingConfigs.isEmpty()}">
+                        <h3>缺失的配置项：</h3>
+                        <ul class="config-list">
+                            <li th:if="${config.getValue() == null}" th:each="config : ${missingConfigs}"
+                                th:text="${config.getKey()}"></li>
+                        </ul>
+                    </div>
+
+                    <div class="config-form">
+                        <form id="systemCheckForm" onsubmit="return submitSystemCheck(event)">
+                                <span th:if="${missingConfigs.containsKey('veto_config_alchemy_api_key')}">
+                                    <div class="form-group"
+                                         th:if="${missingConfigs.containsKey('veto_config_alchemy_api_key')}">
+                                        <label for="veto_config_alchemy_api_key">ALCHEMY API密钥 *</label>
+                                        <input id="veto_config_alchemy_api_key" name="veto_config_alchemy_api_key"
+                                               class="form-control"
+                                               th:value="${missingConfigs.getString('veto_config_alchemy_api_key')}"
+                                               required>
+                                    </div>
+
+
+
+                                    <div class="form-group"
+                                         th:if="${missingConfigs.containsKey('veto_config_alchemy_test_net')}">
+                                        <label for="veto_config_alchemy_test_net">ALCHEMY网络 *</label>
+                                        <select id="veto_config_alchemy_test_net" name="veto_config_alchemy_test_net"
+                                                class="form-control" required>
+                                            <option value="false"
+                                                    th:selected="${!missingConfigs.get('veto_config_alchemy_test_net')}">正式网络</option>
+                                            <option value="true"
+                                                    th:selected="${missingConfigs.get('veto_config_alchemy_test_net')}">测试网络</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group"
+                                         th:if="${missingConfigs.containsKey('veto_config_system_domain')}">
+                                        <label for="veto_config_system_domain">服务主域名(仅可修改一次，否则后续会影响钱包入账) *</label>
+                                        <input type="url" id="veto_config_system_domain"
+                                               name="veto_config_system_domain"
+                                               class="form-control"
+                                               th:value="${missingConfigs.getString('veto_config_system_domain')}"
+                                               required>
+                                    </div>
+
+                                    <div class="form-group"
+                                         th:if="${missingConfigs.containsKey('veto_config_system_coin_type')}">
+                                        <label for="veto_config_system_coin_type">系统币种(修改之后不可再次修改，再次修改需要清除核心数据) *</label>
+                                        <select id="veto_config_system_coin_type" name="veto_config_system_coin_type"
+                                                class="form-control" required>
+                                            <option value="" selected>请选择币种类型</option>
+                                            <option value="USDC_SOL">USDC-SOL</option>
+                                            <option value="USDT_SOL">USDT-SOL</option>
+                                            <option value="SRM_SOL">SRM-SOL</option>
+                                            <option value="RAY_SOL">RAY-SOL</option>
+                                            <option value="SOL">SOL</option>
+                                            <option value="USDC_ETH">USDC-ETH</option>
+                                            <option value="USDT_ETH">USDT-ETH</option>
+                                            <option value="DAI_ETH">DAI-ETH</option>
+                                            <option value="LINK_ETH">LINK-ETH</option>
+                                            <option value="WBTC_ETH">WBTC-ETH</option>
+                                            <option value="ETH">ETH</option>
+                                            <option value="RMB">RMB</option>
+                                            <option value="USD">USD</option>
+                                        </select>
+                                    </div>
+                                </span>
+                            <span th:if="${missingConfigs.containsKey('address')}">
+                                <div class="form-group">
+                                        <label for="veto_config_alchemy_auth_token">address请填写 *</label>
+                                        <input type="text"
+                                               readonly class="form-control"
+                                               th:value="${missingConfigs.getString('address')}"
+                                               required>
+                                    </div>
+                                <div class="form-group">
+                                        <label for="veto_config_alchemy_auth_token">监听地址请填写 *</label>
+                                        <input type="text"
+                                               readonly class="form-control"
+                                               th:value="${missingConfigs.getString('webhook_url')}"
+                                               required>
+                                </div>
+                                <div class="form-group">
+                                        <label for="veto_config_alchemy_auth_token">ALCHEMY NOTIFY ID *</label>
+                                        <input type="text" id="veto_config_alchemy_notify_id"
+                                               name="notifyId" class="form-control"
+                                               th:value="${missingConfigs.getString('notifyId')}"
+                                               required>
+                                    </div>
+                                <div class="form-group">
+                                        <label for="veto_config_alchemy_auth_token">ALCHEMY AUTH TOKEN *</label>
+                                        <input type="text" id="veto_config_alchemy_auth_token"
+                                               name="alchemyAuthToken" class="form-control"
+                                               th:value="${missingConfigs.getString('alchemyAuthToken')}"
+                                               required>
+                                    </div>
+                            </span>
+                            <div class="check-warning">
+                                <i class="fas fa-info-circle"></i>
+                                <span>请确保所有必填项都已正确填写，这些参数是系统正常运行的基础保障。</span>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="submitSystemCheck" onclick="submitSystemCheck()">
+                    <i class="fas fa-check"></i>
+                    完成配置
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+
+</div>
+</div>
+</div>
+
+<!-- 通用JavaScript -->
+<script th:src="@{/static/js/layout.js}"></script>
+<!-- 页面特定JavaScript -->
+<script th:src="@{/static/js/dashboard.js}"></script>
+<!-- 系统检查JavaScript -->
+<script th:src="@{/static/js/system-check.js}"></script>
+</body>
+</html>

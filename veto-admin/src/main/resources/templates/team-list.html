@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>球队管理 - Veto 管理后台</title>
+    <link rel="stylesheet" th:href="@{/static/css/dashboard.css}">
+    <link rel="stylesheet" href="/static/css/team.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="layout-container">
+        <!-- 侧边栏 -->
+        <aside class="sidebar" th:replace="fragments/sidebar :: sidebar"></aside>
+        
+        <!-- 主内容区 -->
+        <div class="main-content">
+            <!-- 顶部导航栏 -->
+            <header class="header" th:replace="fragments/header :: header"></header>
+            
+            <!-- 页面内容 -->
+            <main class="content">
+                <div class="page-header">
+                    <h1 class="page-title">球队管理</h1>
+                    <div class="page-actions">
+                        <button class="btn btn-primary" onclick="refreshTeamList()">
+                            <i class="fas fa-sync-alt"></i>
+                            刷新
+                        </button>
+                        <button class="btn btn-success" onclick="addTeam()">
+                            <i class="fas fa-plus"></i>
+                            添加球队
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- 搜索和筛选 -->
+                <div class="search-section">
+                    <div class="search-form">
+                        <div class="form-group">
+                            <label for="teamSearch">球队名称搜索：</label>
+                            <input type="text" id="teamSearch" class="form-control" 
+                                   th:value="${name}" placeholder="请输入球队中英文名称">
+                        </div>
+                        <button class="btn btn-primary" onclick="handleSearch()">
+                            <i class="fas fa-search"></i>
+                            搜索
+                        </button>
+                        <button class="btn btn-secondary" onclick="clearSearch()">
+                            <i class="fas fa-times"></i>
+                            清空
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- 球队列表 -->
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>球队ID</th>
+                                <th>球队图标</th>
+                                <th>中文名称</th>
+                                <th>英文名称</th>
+                                <th>状态</th>
+                                <th>创建时间</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="team : ${data}" th:class="${team.status} ? '' : 'disabled-row'">
+                                <td th:text="${team.id}">1</td>
+                                <td class="logo-cell">
+                                    <div class="team-logo" th:if="${team.icon}">
+                                        <img th:src="${'/team/avatar/' + team.icon.replace('.png', '')}" alt="球队图标" class="logo-image">
+                                    </div>
+                                    <div class="no-logo" th:unless="${team.icon}">
+                                        <i class="fas fa-image"></i>
+                                        <span>无图标</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="team-name-cn" th:text="${team.cnName}">曼城</span>
+                                </td>
+                                <td>
+                                    <span class="team-name-en" th:text="${team.enName}">Manchester City</span>
+                                </td>
+                                <td>
+                                    <span class="status-badge" th:class="'status-' + ${team.status ? 'enabled' : 'disabled'}" 
+                                          th:text="${team.status ? '启用' : '禁用'}">启用</span>
+                                </td>
+                                <td th:text="${#dates.format(team.createdAt, 'yyyy-MM-dd HH:mm:ss')}">2024-01-01 10:00:00</td>
+                                <td class="action-cell">
+                                    <button class="btn btn-sm btn-primary" th:onclick="'editTeam(\'' + ${team.id} + '\')'">
+                                        <i class="fas fa-edit"></i>
+                                        编辑
+                                    </button>
+                                    <button class="btn btn-sm btn-danger" th:onclick="'deleteTeam(\'' + ${team.id} + '\')'">
+                                        <i class="fas fa-trash"></i>
+                                        删除
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <!-- 分页 -->
+                    <div class="pagination">
+                        <button class="btn-prev" id="prevBtn" th:disabled="${data.first}">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <span class="page-info">
+                            第 <span th:text="${data.pageable.pageNumber}">1</span> 页，共 <span th:text="${data.totalPages}">1</span> 页
+                        </span>
+                        <button class="btn-next" id="nextBtn" th:disabled="${data.last}">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <script src="/static/js/layout.js"></script>
+    <script src="/static/js/team-list.js"></script>
+</body>
+<script type="text/javascript">
+    function editTeam(id){
+        window.location.href = '/team/edit/' + id;
+    }
+    
+    function deleteTeam(id){
+        if (confirm('确定要删除这个球队吗？删除后无法恢复！')) {
+            fetch('/admin/teams/' + id, {
+                method: 'DELETE'
+            })
+            .then(response => {
+                if (response.ok) {
+                    window.showNotification('球队删除成功', 'success');
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000);
+                } else {
+                    throw new Error('删除失败');
+                }
+            })
+            .catch(error => {
+                console.error('删除球队失败:', error);
+                window.showNotification('删除失败，请重试', 'error');
+            });
+        }
+    }
+</script>
+</html>

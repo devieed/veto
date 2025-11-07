@@ -1,0 +1,618 @@
+/* 系统配置页面样式 */
+
+/* 配置导航 */
+.config-nav {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e1e5e9;
+}
+
+.nav-tabs {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.nav-tab {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    border: 2px solid #e1e5e9;
+    border-radius: 8px;
+    background: white;
+    color: #6c757d;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.nav-tab:hover {
+    border-color: #667eea;
+    color: #667eea;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+}
+
+.nav-tab.active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-color: #667eea;
+    color: white;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.nav-tab i {
+    font-size: 16px;
+}
+
+/* 配置内容区域 */
+.config-content {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e1e5e9;
+    overflow: hidden;
+}
+
+.config-section {
+    display: none;
+    padding: 20px;
+}
+
+.config-section.active {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.section-header {
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #f8f9fa;
+}
+
+.section-header h3 {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0 0 10px 0;
+    color: #2c3e50;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.section-header h3 i {
+    color: #667eea;
+    font-size: 28px;
+}
+
+.section-header p {
+    margin: 0;
+    color: #6c757d;
+    font-size: 16px;
+}
+
+/* 配置网格 */
+.config-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 25px;
+}
+
+.config-item {
+    background: #f8f9fa;
+    border: 2px solid #e1e5e9;
+    border-radius: 12px;
+    padding: 25px;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.config-item:hover {
+    border-color: #667eea;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+    transform: translateY(-2px);
+}
+
+.config-label {
+    margin-bottom: 15px;
+}
+
+.config-label label {
+    display: block;
+    font-size: 16px;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 5px;
+}
+
+.config-key {
+    display: inline-block;
+    background: #667eea;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    font-family: 'Courier New', monospace;
+}
+
+.config-control {
+    margin-bottom: 10px;
+}
+
+.config-control .form-control {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.config-control .form-control:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.config-control input[type="number"] {
+    text-align: right;
+}
+
+.config-control select {
+    cursor: pointer;
+}
+
+.config-control select[multiple] {
+    min-height: 120px;
+    padding: 8px 15px;
+}
+
+.config-control select[multiple] option {
+    padding: 8px 12px;
+    margin: 2px 0;
+    border-radius: 4px;
+    background: #f8f9fa;
+    border: 1px solid #e1e5e9;
+    transition: all 0.3s ease;
+}
+
+.config-control select[multiple] option:hover {
+    background: #e9ecef;
+}
+
+.config-control select[multiple] option:checked {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-color: #667eea;
+}
+
+/* 复选框组样式 */
+.checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 2px solid #e1e5e9;
+}
+
+.checkbox-item {
+    display: flex;
+    align-items: center;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.checkbox-label:hover {
+    background: #e9ecef;
+}
+
+.checkbox-label input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    cursor: pointer;
+    accent-color: #667eea;
+}
+
+.checkbox-text {
+    font-size: 14px;
+    font-weight: 500;
+    color: #2c3e50;
+    user-select: none;
+}
+
+.checkbox-label:has(input:checked) {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.checkbox-label:has(input:checked) .checkbox-text {
+    color: white;
+    font-weight: 600;
+}
+
+.config-desc {
+    font-size: 13px;
+    color: #6c757d;
+    line-height: 1.4;
+    font-style: italic;
+}
+
+/* 配置项操作按钮 */
+.config-actions {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+    justify-content: flex-end;
+}
+
+.config-actions .btn {
+    padding: 6px 12px;
+    font-size: 12px;
+    min-width: 60px;
+}
+
+.config-actions .save-btn {
+    background: #28a745;
+    color: white;
+    border: none;
+}
+
+.config-actions .save-btn:hover:not(:disabled) {
+    background: #218838;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+}
+
+/* 开关样式 */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+input:checked + .slider {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+.slider:hover {
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+}
+
+/* 配置项状态指示 */
+.config-item.modified {
+    border-color: #ffc107;
+    background: #fff8e1;
+}
+
+.config-item.modified .config-key {
+    background: #ffc107;
+    color: #212529;
+}
+
+.config-item.error {
+    border-color: #dc3545;
+    background: #f8d7da;
+}
+
+.config-item.error .config-key {
+    background: #dc3545;
+}
+
+/* 按钮样式 */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    justify-content: center;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover:not(:disabled) {
+    background: #5a6268;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+}
+
+.btn-info {
+    background: #17a2b8;
+    color: white;
+}
+
+.btn-info:hover:not(:disabled) {
+    background: #138496;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(23, 162, 184, 0.3);
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* 加载状态 */
+.btn.loading .btn-text {
+    display: none;
+}
+
+.btn.loading .btn-loading {
+    display: inline-flex;
+}
+
+.btn-loading {
+    display: none;
+}
+
+/* 表单样式 */
+.form-control {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+/* 成功提示 */
+.save-success {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #28a745;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+    z-index: 10000;
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* 错误提示 */
+.error-message {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #dc3545;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+    z-index: 10000;
+    animation: slideIn 0.3s ease;
+}
+
+/* 配置项验证状态 */
+.config-item.valid .config-control .form-control {
+    border-color: #28a745;
+}
+
+.config-item.invalid .config-control .form-control {
+    border-color: #dc3545;
+}
+
+.config-item.invalid .config-desc::after {
+    content: " (格式错误)";
+    color: #dc3545;
+    font-weight: 600;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .nav-tabs {
+        flex-direction: column;
+    }
+    
+    .nav-tab {
+        justify-content: center;
+    }
+    
+    .config-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .config-item {
+        padding: 20px;
+    }
+    
+    .section-header h3 {
+        font-size: 20px;
+    }
+    
+    .section-header h3 i {
+        font-size: 24px;
+    }
+    
+    .page-header {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+    }
+    
+    .page-actions {
+        width: 100%;
+        justify-content: flex-start;
+    }
+}
+
+@media (max-width: 480px) {
+    .config-content {
+        margin: 0 -10px;
+        border-radius: 0;
+    }
+    
+    .config-section {
+        padding: 20px;
+    }
+    
+    .config-item {
+        padding: 15px;
+    }
+    
+    .config-label label {
+        font-size: 14px;
+    }
+    
+    .config-key {
+        font-size: 11px;
+        padding: 3px 8px;
+    }
+    
+    .config-desc {
+        font-size: 12px;
+    }
+    
+    .btn {
+        padding: 10px 16px;
+        font-size: 13px;
+    }
+}
+
+/* 特殊配置项样式 */
+.config-item[data-type="boolean"] {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+.config-item[data-type="number"] {
+    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+}
+
+.config-item[data-type="string"] {
+    background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
+}
+
+.config-item[data-type="select"] {
+    background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%);
+}
+
+/* 配置项动画 */
+.config-item {
+    animation: configItemAppear 0.5s ease forwards;
+}
+
+@keyframes configItemAppear {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 配置项延迟动画 */
+.config-item:nth-child(1) { animation-delay: 0.1s; }
+.config-item:nth-child(2) { animation-delay: 0.2s; }
+.config-item:nth-child(3) { animation-delay: 0.3s; }
+.config-item:nth-child(4) { animation-delay: 0.4s; }
+.config-item:nth-child(5) { animation-delay: 0.5s; }
+.config-item:nth-child(6) { animation-delay: 0.6s; }
+.config-item:nth-child(7) { animation-delay: 0.7s; }
+.config-item:nth-child(8) { animation-delay: 0.8s; }
